@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>1〜6 ルーレット</title>
+    <style>
+        :root {
+            --box-size: 220px;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+            background: #f6f7fb;
+        }
+
+        .wrap {
+            min-height: 100%;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+            padding: 28px 28px 32px;
+            width: min(520px, 92vw);
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: .02em;
+            color: #222;
+        }
+
+        .result-box {
+            width: var(--box-size);
+            height: var(--box-size);
+            margin: 16px auto 18px;
+            border-radius: 24px;
+            border: 2px solid #e5e7eb;
+            display: grid;
+            place-items: center;
+            font-size: 96px;
+            font-weight: 800;
+            color: #111827;
+            user-select: none;
+            background: #fafafa;
+            transition: transform .08s ease, box-shadow .08s ease;
+        }
+
+        .result-box.spinning {
+            transform: scale(1.01);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .06) inset;
+        }
+
+        .btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            appearance: none;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 999px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .08);
+        }
+
+        #stopBtn {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        #startBtn {
+            background: #6366f1;
+            color: #fff;
+        }
+
+        button:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .hint {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="card">
+            <h1>1〜6 ルーレット</h1>
+            <div id="result" class="result-box">-</div>
+            <div class="btns">
+                <button id="startBtn" type="button">スタート</button>
+                <button id="stopBtn" type="button">ストップ！</button>
+            </div>
+            <div class="hint">中央のボックスに結果が表示されます。</div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const resultEl = document.getElementById("result");
+            const startBtn = document.getElementById("startBtn");
+            const stopBtn = document.getElementById("stopBtn");
+
+            let timerId = null;
+
+            function rand1to6() {
+                // 1〜6 の整数
+                return Math.floor(Math.random() * 6) + 1;
+            }
+
+            function startSpin() {
+                if (timerId !== null) return; // 既に回転中
+                resultEl.classList.add("spinning");
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+
+                // 高速に数字を更新（例: 80msごと）
+                timerId = setInterval(() => {
+                    resultEl.textContent = rand1to6();
+                }, 80);
+            }
+
+            function stopSpin() {
+                if (timerId === null) return;
+                clearInterval(timerId);
+                timerId = null;
+                resultEl.classList.remove("spinning");
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+
+                // 止まった瞬間の数字を最終結果として少し弾ませる
+                resultEl.animate(
+                    [{ transform: "scale(1)" }, { transform: "scale(1.08)" }, { transform: "scale(1)" }],
+                    { duration: 180, easing: "ease-out" }
+                );
+            }
+
+            // 初期状態：自動で回し始めてもOKなら下行を有効化
+            // startSpin();
+
+            startBtn.addEventListener("click", startSpin);
+            stopBtn.addEventListener("click", stopSpin);
+
+            // ページ初期：ストップは無効化しておく
+            stopBtn.disabled = true;
+        })();
+    </script>
+</body>
+
+</html>
