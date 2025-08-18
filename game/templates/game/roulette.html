@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>1〜6 ルーレット</title>
+    <title>やることルーレット</title>
     <style>
         :root {
             --box-size: 220px;
@@ -43,20 +43,23 @@
         }
 
         .result-box {
-            width: var(--box-size);
-            height: var(--box-size);
+            width: 320px;
+            /* 横幅を広く */
+            height: 120px;
+            /* 縦幅を低く */
             margin: 16px auto 18px;
-            border-radius: 24px;
+            border-radius: 20px;
             border: 2px solid #e5e7eb;
             display: grid;
             place-items: center;
-            font-size: 96px;
+            font-size: 30px;
             font-weight: 800;
             color: #111827;
             user-select: none;
             background: #fafafa;
             transition: transform .08s ease, box-shadow .08s ease;
         }
+
 
         .result-box.spinning {
             transform: scale(1.01);
@@ -108,7 +111,7 @@
 <body>
     <div class="wrap">
         <div class="card">
-            <h1>1〜6 ルーレット</h1>
+            <h1>やることルーレット</h1>
             <div id="result" class="result-box">-</div>
             <div class="btns">
                 <button id="startBtn" type="button">スタート</button>
@@ -118,28 +121,31 @@
         </div>
     </div>
 
+    {{ items|json_script:"roulette-items" }}
     <script>
         (function () {
             const resultEl = document.getElementById("result");
             const startBtn = document.getElementById("startBtn");
             const stopBtn = document.getElementById("stopBtn");
 
+            // Djangoから渡されたリストをJSに埋め込み
+            const items = JSON.parse(document.getElementById("roulette-items").textContent);
+
             let timerId = null;
 
-            function rand1to6() {
-                // 1〜6 の整数
-                return Math.floor(Math.random() * 6) + 1;
+            function randomItem() {
+                const idx = Math.floor(Math.random() * items.length);
+                return items[idx];
             }
 
             function startSpin() {
-                if (timerId !== null) return; // 既に回転中
+                if (timerId !== null) return;
                 resultEl.classList.add("spinning");
                 startBtn.disabled = true;
                 stopBtn.disabled = false;
 
-                // 高速に数字を更新（例: 80msごと）
                 timerId = setInterval(() => {
-                    resultEl.textContent = rand1to6();
+                    resultEl.textContent = randomItem();
                 }, 80);
             }
 
@@ -151,20 +157,15 @@
                 startBtn.disabled = false;
                 stopBtn.disabled = true;
 
-                // 止まった瞬間の数字を最終結果として少し弾ませる
                 resultEl.animate(
                     [{ transform: "scale(1)" }, { transform: "scale(1.08)" }, { transform: "scale(1)" }],
                     { duration: 180, easing: "ease-out" }
                 );
             }
 
-            // 初期状態：自動で回し始めてもOKなら下行を有効化
-            // startSpin();
-
             startBtn.addEventListener("click", startSpin);
             stopBtn.addEventListener("click", stopSpin);
 
-            // ページ初期：ストップは無効化しておく
             stopBtn.disabled = true;
         })();
     </script>
