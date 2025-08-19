@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,6 @@ SECRET_KEY = 'django-insecure-omcas-6t2n+!-t@&9%3bmjfn!lw%ip!q7mt!z$j-w-&j(j5yh(
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -74,9 +74,13 @@ WSGI_APPLICATION = 'roulette_proj.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DJANGO_DB_NAME", "django_db"),
+        "USER": os.environ.get("DJANGO_DB_USER", "django"),
+        "PASSWORD": os.environ.get("DJANGO_DB_PASSWORD", "secret"),
+        "HOST": os.environ.get("DJANGO_DB_HOST", "localhost"),
+        "PORT": 5432,
     }
 }
 

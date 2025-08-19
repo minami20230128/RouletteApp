@@ -1,0 +1,30 @@
+[
+  {
+    "model": "game.rouletteitem",
+    "pk": 1,
+    "fields": {
+      "label": "道場20周"
+    }
+  },
+  {
+    "model": "game.rouletteitem",
+    "pk": 2,
+    "fields": {
+      "label": "iKnow3周"
+    }
+  },
+  {
+    "model": "game.rouletteitem",
+    "pk": 3,
+    "fields": {
+      "label": "6-Minute English"
+    }
+  },
+  {
+    "model": "game.rouletteitem",
+    "pk": 3,
+    "fields": {
+      "label": "Native Camp"
+    }
+  }
+]

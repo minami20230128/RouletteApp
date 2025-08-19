@@ -5,3 +5,6 @@ class RouletteItem(models.Model):
 
     def __str__(self):
         return self.label
+
+    class Meta:
+        db_table = "roulette_items" 
